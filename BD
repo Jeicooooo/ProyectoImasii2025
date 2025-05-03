@@ -1,0 +1,84 @@
+CREATE DATABASE IndustriasUlloa;
+USE IndustriasUlloa;
+
+CREATE TABLE Clientes (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+Nombres VARCHAR(50) NOT NULL,
+Apellidos VARCHAR(50),
+Sexo VARCHAR(50),
+FechaNacimiento DATE,
+Direccion VARCHAR(255),
+Telefono VARCHAR(20)
+);
+
+CREATE TABLE Ingredientes (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+Nombre VARCHAR(255) NOT NULL,
+UnidadMedida VARCHAR(50),
+CantidadDisponible DECIMAL(10,2)
+);
+
+CREATE TABLE Productos (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+Nombre VARCHAR(255) NOT NULL,
+Tipo VARCHAR(50),
+Precio DECIMAL(10,2),
+Ingredientes TEXT
+);
+
+CREATE TABLE Pedidos (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+ClienteId INT,
+FechaPedido DATE,
+Total DECIMAL(10,2),
+FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+);
+
+CREATE TABLE PedidoProductos (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+PedidoId INT,
+ProductoId INT,
+Cantidad INT,
+FOREIGN KEY (PedidoId) REFERENCES Pedidos(Id),
+
+FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+);
+
+CREATE TABLE ProductoIngredientes (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+ProductoId INT,
+IngredienteId INT,
+CantidadNecesaria DECIMAL(10,2),
+FOREIGN KEY (ProductoId) REFERENCES Productos(Id),
+FOREIGN KEY (IngredienteId) REFERENCES Ingredientes(Id)
+);
+
+CREATE TABLE Establecimientos (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+Nombre VARCHAR(80),
+Tipo VARCHAR(30),
+CONSTRAINT CHK_Tipo CHECK (Tipo IN ('Privado', 'Publico'))
+);
+
+CREATE TABLE Municipios (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+Nombre VARCHAR(50)
+);
+
+CREATE TABLE Ventas (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+ClienteId INT NOT NULL,
+FechaVenta DATE NOT NULL,
+Total DECIMAL(10,2) NOT NULL,
+FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+);
+
+CREATE TABLE DetalleVenta (
+Id INT AUTO_INCREMENT PRIMARY KEY,
+VentaId INT NOT NULL,
+ProductoId INT NOT NULL,
+Cantidad INT NOT NULL,
+PrecioUnitario DECIMAL(10,2) NOT NULL,
+FOREIGN KEY (VentaId) REFERENCES Ventas(Id),
+FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+);
